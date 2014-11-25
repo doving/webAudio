@@ -1,0 +1,72 @@
+@head-height: 100px;
+@body-padding: 20px;
+@list-width: 200px;
+html,body,div,header,h1,h2,footer,p,ul,li,span,a,dl,dt,dd,
+section,canvas,input,button,form,textarea,select{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	color: #fff;
+	box-sizing: border-box;
+}
+html,body{
+	height: 100%;
+}
+body{
+	position: relative;
+	padding: 20px;
+	text-align: center;
+	min-height: 500px;
+	background: #000;
+	font: 16px "微软雅黑",Georgia,Serif;
+}
+header{
+	height: @head-height;
+	h1{
+		height: @head-height;
+		line-height: 50px;
+		font-size: 50px;
+	}
+}
+.list,.canvas{
+	position: absolute;
+	top: @head-height + @body-padding * 2;
+	bottom: @body-padding;
+}
+.list{
+	left: @body-padding;
+	width: @list-width;
+	overflow: hidden;
+	.music-add{
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		border: solid 2px #fff;
+		background: #000;
+		cursor: pointer;
+	}
+	.music-list{
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 40px;
+		bottom: 0;
+		overflow: auto;
+		border: solid #fff 1px;
+		li{
+			height: 30px;
+			line-height: 30px;
+			cursor: pointer;
+			&.play{
+				color: green;
+			}
+		}
+	}
+	.upload{
+		display: none;
+	}
+}
+.canvas{
+	left: @list-width + @body-padding * 2;
+	right: @body-padding;
+}

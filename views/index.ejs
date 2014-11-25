@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+
+  </head>
+  <body>
+  	<header>
+  		<h1>Passionate Music</h1>
+  	</header>  	
+    <div class="list">
+    	<button class="music-add" id="add">
+    		Local music
+    	</button>
+      <input class="upload" type="file" id="upload" />
+    	<ul class="music-list">
+        <% music.forEach(function(name){ %>
+        <li title="<%= name %>"><%= name.substring(0,12) %></li>
+        <% }) %>
+    	</ul>
+    </div>
+    <div class="canvas" id="canvas">
+    </div>
+    <script type="text/javascript" src='/javascripts/bower_components/threejs/build/three.min.js'></script>
+    <script type="text/javascript" src='/javascripts/webAudio.js'></script>
+    <script type="text/javascript" src='/javascripts/index.js'></script>
+  </body>
+</html>
