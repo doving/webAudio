@@ -8,7 +8,7 @@ box.appendChild(canvas);
 var height,//canvas高
 	width;//canvs 宽
 
-var size = 128;//音乐片段数
+var size = 64;//音乐片段数
 
 var arr = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 
