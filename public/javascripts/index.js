@@ -58,16 +58,18 @@ var endFun = function(){
 }
 
 var visualizer = new MusicVisualizer(size*2,endFun);
-
+var st = new Date;
 visualizer.visualize(function(){
-	ctx.clearRect(0, 0, width, height);
+	ctx.clearRect(0, 0, window.width, window.height);
+	var o = null;
 	for(var i = 0; i < size; i++){		
-		var x = arr[i].x;
-			y = arr[i].y,
-			r = Math.round(this[i]/16)*3+10;
+		o = arr[i];
+		var x = o.x;
+			y = o.y,
+			r = Math.round(this[i]/5)+10;
 
-		arr[i].x += /*Math.round(this[i]/10) + */arr[i].dx;
-		arr[i].x > width - 50 && (arr[i].x = 50);
+		o.x += o.dx;
+		o.x > window.width - 50 && (o.x = 50);
 
 		//开始路径，绘画圆
 	    ctx.beginPath();
@@ -75,9 +77,8 @@ visualizer.visualize(function(){
 
 	    //渐变填充
 	    var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-	    var yellow = 'rgb(255,255,'+Math.round(this[i]/1.1)+')';
-	    gradient.addColorStop(0, yellow);
-	    gradient.addColorStop(this[i]/280, arr[i].color);
+	    gradient.addColorStop(0, '#fff');
+	    gradient.addColorStop(this[i]/280, o.color);
 	    gradient.addColorStop(1, '#000');
 	    ctx.fillStyle = gradient;
 	    ctx.fill();

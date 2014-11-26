@@ -66,8 +66,15 @@ MusicVisualizer.prototype.visualize = function(fun){
 	var arr = new Uint8Array(this.analyser.frequencyBinCount);
 	var self = this;
 
-	this.jsnode.onaudioprocess = function(){
+	/*this.jsnode.onaudioprocess = function(){
 		self.analyser.getByteFrequencyData(arr);
 		MusicVisualizer.isFunction(fun) && fun.call(arr);
+	}*/
+
+	function v(){
+		self.analyser.getByteFrequencyData(arr);
+		fun.call(arr);
+		requestAnimationFrame(v);
 	}
+	MusicVisualizer.isFunction(fun) && requestAnimationFrame(v);
 }
