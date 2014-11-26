@@ -40,7 +40,8 @@ function getArr(){
 	//创建线性渐变对象，以便绘制柱状图使用
 	ARR = [];
 	ARR.gradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
-	ARR.gradient.addColorStop(0, '#ff0');
+	ARR.gradient.addColorStop(0, '#0f0');
+	ARR.gradient.addColorStop(0.5, '#ff0');
 	ARR.gradient.addColorStop(1, '#f00');
 
 	for(var i = 0;i < SIZE; i++){
@@ -50,6 +51,7 @@ function getArr(){
 			color: 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')',
 			dx: random(1, 4),
 			dy: random(1, 5),
+			cap: 0
 		});
 	}
 }
@@ -89,6 +91,14 @@ function Render(){
 			}
 			if(Render.type == 'Column'){
 				var h = this[i] / 280 * HEIGHT;
+				if(--ARR[i].cap < cw){
+					ARR[i].cap = cw;
+				};
+				if(h > 0 && (ARR[i].cap < h + 50)){
+					ARR[i].cap = h + 50 > HEIGHT ? HEIGHT : h + 50;
+				}
+				//console.log(ARR[i].cap);
+				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, cw);
 				ctx.fillRect(w * i, HEIGHT - h, cw, h);
 			}
 			
