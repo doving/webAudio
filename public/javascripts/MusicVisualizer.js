@@ -24,21 +24,15 @@ MusicVisualizer.prototype.decode = function(arraybuffer){
 		self.source.connect(self.analyser);
 		if(self.endFun && MusicVisualizer.isFunction(self.endFun)){
 			self.source.onended = function(fun){
-				/*console.log(self.source);*/
-				console.log(self.forceStop);
-
 				if(self.forceStop){
 					self.forceStop = false;
-					/*console.log(self.forceStop,"inner");*/
 					return;
 				}
 				self.endFun();
 			}
 		}
-		this.isdecoding = false;
 	},function(err){
 		console.log(err);
-		this.isdecoding = false;
 	});
 }
 MusicVisualizer.prototype.play = function(path){
