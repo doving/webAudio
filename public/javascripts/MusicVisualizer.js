@@ -17,6 +17,7 @@ MusicVisualizer.isFunction = function(fun){
 MusicVisualizer.prototype.decode = function(arraybuffer){
 	var self = this;
 	this.audioContext.decodeAudioData(arraybuffer, function(buffer){
+		if(self.source)self.stop(0);
 		var bufferSourceNode = self.audioContext.createBufferSource();
 		bufferSourceNode.buffer = buffer; 
 		bufferSourceNode.start(0);
@@ -35,12 +36,13 @@ MusicVisualizer.prototype.decode = function(arraybuffer){
 		console.log(err);
 	});
 }
+
 MusicVisualizer.prototype.play = function(path){
 	if(this.source){
-		this.source.stop(0);
-		this.source = null;
+		this.source.stop(0);		
 		this.forceStop = true;
 	}
+	this.source = null;
 	if(path instanceof ArrayBuffer){
 		this.decode(path);
 	}

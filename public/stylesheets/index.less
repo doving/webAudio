@@ -16,16 +16,56 @@ body{
 	position: relative;
 	padding: 20px;
 	text-align: center;
-	min-height: 500px;
+	min-height: 300px;
 	background: #000;
 	font: 16px "微软雅黑",Georgia,Serif;
 }
 header{
 	height: @head-height;
 	h1{
-		height: @head-height;
+		height: 50px;
 		line-height: 50px;
 		font-size: 50px;
+		margin-bottom: 20px;
+		
+	}
+	@media screen and (max-width: 500px){
+		h1{
+			font-size: 30px;
+		}
+	}
+	.type{
+		display: inline-block;
+				
+		margin: 0 auto;
+		&:after{
+			display: block;
+			content: "";
+			clear: both;
+		}
+		li{
+			float: left;
+			height: 30px;
+			line-height: 30px;
+			width: 80px;
+			border-top: solid 1px #fff;
+	        border-right: solid 1px #fff;
+	        border-bottom: solid 1px #fff;
+	        cursor: pointer;
+			&:first-child{
+		        border-left: solid 1px #fff;
+		        border-top-left-radius: 5px;
+		        border-bottom-left-radius: 5px;
+		    }
+		    &:last-child{
+		        border-top-right-radius: 5px;
+		        border-bottom-right-radius: 5px;
+		    }
+		    &.selected{
+		        background: #fff;
+		        color: #000;
+		    }
+		}
 	}
 }
 .list,.canvas{
