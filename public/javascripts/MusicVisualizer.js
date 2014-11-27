@@ -1,11 +1,11 @@
 function MusicVisualizer(size, endcallback){
 	this.source = null;
-	this.audioContext = new window.AudioContext();
+	this.audioContext = new (window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext)();
 	this.analyser = this.audioContext.createAnalyser();
 	this.analyser.fftSize = size;
-	this.jsnode = this.audioContext.createScriptProcessor();
+	//this.jsnode = this.audioContext.createScriptProcessor();
 	this.analyser.connect(this.audioContext.destination);
-	this.jsnode.connect(this.audioContext.destination);
+	//this.jsnode.connect(this.audioContext.destination);
 	this.endFun = endcallback;
 	this.forceStop = false;
 }
@@ -17,9 +17,9 @@ MusicVisualizer.isFunction = function(fun){
 MusicVisualizer.prototype.decode = function(arraybuffer){
 	var self = this;
 	this.audioContext.decodeAudioData(arraybuffer, function(buffer){
-		if(self.source)self.stop(0);
 		var bufferSourceNode = self.audioContext.createBufferSource();
 		bufferSourceNode.buffer = buffer; 
+		bufferSourceNode.start = bufferSourceNode.start || bufferSourceNode.noteOn;
 		bufferSourceNode.start(0);
 		self.source = bufferSourceNode;
 		self.source.connect(self.analyser);
@@ -39,6 +39,7 @@ MusicVisualizer.prototype.decode = function(arraybuffer){
 
 MusicVisualizer.prototype.play = function(path){
 	if(this.source){
+		this.source.stop = this.source.stop || this.source.noteOff;
 		this.source.stop(0);		
 		this.forceStop = true;
 	}
@@ -66,7 +67,7 @@ MusicVisualizer.prototype.visualize = function(fun){
 		self.analyser.getByteFrequencyData(arr);
 		MusicVisualizer.isFunction(fun) && fun.call(arr);
 	}*/
-
+	var requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.mzRequestAnimationFrame;
 	function v(){
 		self.analyser.getByteFrequencyData(arr);
 		fun.call(arr);

@@ -12,8 +12,14 @@ var SIZE = 64;//音乐片段数
 
 var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 
-    
+var isMobile = (function(){
+	var u = window.navigator.userAgent;
+	var re = /(Android)|(iPhone)|(iPad)|(iPod)/i;
+	//Android和苹果设备则设置音乐片段为16
+	return re.test(u);
+})();
 
+isMobile && (SIZE = 16);
 
 //初始化heigth，width以及canvas的宽高
 function init(){
@@ -39,19 +45,30 @@ function random(min, max){
 function getArr(){
 	//创建线性渐变对象，以便绘制柱状图使用
 	ARR = [];
-	ARR.gradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
-	ARR.gradient.addColorStop(0, '#0f0');
-	ARR.gradient.addColorStop(0.5, '#ff0');
-	ARR.gradient.addColorStop(1, '#f00');
+	ARR.linearGradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
+	ARR.linearGradient.addColorStop(0, '#0f0');
+	ARR.linearGradient.addColorStop(0.5, '#ff0');
+	ARR.linearGradient.addColorStop(1, '#f00');
+
+	
 
 	for(var i = 0;i < SIZE; i++){
+		var x =  random(WIDTH*0.04, WIDTH*0.96),
+			y = random(HEIGHT*0.04, HEIGHT*0.96),
+			color = 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')';
+		var gradient = ctx.createRadialGradient(x, y, 0, x, y, 50);
+
+		gradient.addColorStop(0, '#fff');
+		gradient.addColorStop(0.5, color);
+		gradient.addColorStop(1, '#000');
 		ARR.push({
-			x: random(WIDTH*0.04, WIDTH*0.96),
-			y: random(HEIGHT*0.04, HEIGHT*0.96),
-			color: 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')',
+			x: x,
+			y: y,
+			color: color,
 			dx: random(1, 4),
 			dy: random(1, 5),
-			cap: 0
+			cap: 0,
+			radialGradient: gradient
 		});
 	}
 }
@@ -62,9 +79,12 @@ window.onresize = init;
 function Render(){	
 	var o = null;	
 	return function(){
-		ctx.fillStyle = ARR.gradient;
+		ctx.fillStyle = ARR.linearGradient;
+		if(isMobile && Render.type == "Dot"){
+			ctx.fillStyle = "orange";
+		}
 		var w = Math.round(WIDTH / SIZE),
-		cgap = Math.round(w*0.3);
+		cgap = Math.round(w * 0.3);
 		cw = w - cgap;
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		for(var i = 0; i < SIZE; i++){		
@@ -82,11 +102,14 @@ function Render(){
 			    ctx.arc(x, y, r, 0, Math.PI*2, true);
 
 			    //渐变填充
-			    var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-			    gradient.addColorStop(0, '#fff');
-			    gradient.addColorStop(this[i]/280, o.color);
-			    gradient.addColorStop(1, '#000');
-			    ctx.fillStyle = gradient;
+			    if(!isMobile){
+			    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
+				    gradient.addColorStop(0, '#fff');
+				    gradient.addColorStop(this[i]/280, o.color);
+				    gradient.addColorStop(1, '#000');
+				    ctx.fillStyle = gradient;
+			    }
+			    
 			    ctx.fill();
 			}
 			if(Render.type == 'Column'){
