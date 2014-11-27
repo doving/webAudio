@@ -98,7 +98,7 @@ function Render(){
 				ctx.beginPath();
 				ctx.arc(x, y, r, 0, Math.PI*2, true);
 			    
-			    if(!isMobile){
+			    if(isMobile){
 			    	ctx.strokeStyle = ARR[i].color;
 			    	ctx.stroke();
 			    }else{
