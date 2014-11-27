@@ -53,8 +53,8 @@ function getArr(){
 	
 
 	for(var i = 0;i < SIZE; i++){
-		var x =  random(WIDTH*0.04, WIDTH*0.96),
-			y = random(HEIGHT*0.04, HEIGHT*0.96),
+		var x =  random(0, WIDTH),
+			y = random(0, HEIGHT),
 			color = 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')';
 		var gradient = ctx.createRadialGradient(x, y, 0, x, y, 50);
 
@@ -95,7 +95,7 @@ function Render(){
 				r = Math.round((this[i]/4+10)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/800);
 
 				o.x += o.dx;
-				o.x > WIDTH - 50 && (o.x = 50);
+				o.x > WIDTH + 2 * r && (o.x = -r);
 
 				//开始路径，绘画圆
 			    ctx.beginPath();
@@ -117,8 +117,8 @@ function Render(){
 				if(--ARR[i].cap < cw){
 					ARR[i].cap = cw;
 				};
-				if(h > 0 && (ARR[i].cap < h + 50)){
-					ARR[i].cap = h + 50 > HEIGHT ? HEIGHT : h + 50;
+				if(h > 0 && (ARR[i].cap < h + 40)){
+					ARR[i].cap = h + 40 > HEIGHT ? HEIGHT : h + 40;
 				}
 				//console.log(ARR[i].cap);
 				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, cw);
