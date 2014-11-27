@@ -145,6 +145,8 @@ header{
 	}
 }
 .canvas{
+	left: -webkit-calc(~"@{list-width} + "(@body-padding * 2));
+	left: -moz-calc(~"@{list-width} + "(@body-padding * 2));
 	left: calc(~"@{list-width} + "(@body-padding * 2));
 	right: @body-padding;
 }
