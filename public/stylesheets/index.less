@@ -1,6 +1,6 @@
-@head-height: 100px;
+@head-height: 120px;
 @body-padding: 20px;
-@list-width: 200px;
+@list-width: 15%;
 html,body,div,header,h1,h2,footer,p,ul,li,span,a,dl,dt,dd,
 section,canvas,input,button,form,textarea,select{
 	margin: 0;
@@ -14,29 +14,47 @@ html,body{
 }
 body{
 	position: relative;
-	padding: 20px;
 	text-align: center;
-	min-height: 300px;
 	background: #000;
 	font: 16px "微软雅黑",Georgia,Serif;
+	@media screen and (max-height: 450px){
+		font-size: 12px;
+	}
+	@media screen and (max-width: 500px){
+		font-size: 12px;
+	}
 }
 header{
 	height: @head-height;
 	h1{
-		height: 50px;
+		height: 70px;
 		line-height: 50px;
 		font-size: 50px;
+		padding-top: 20px;
 		margin-bottom: 20px;
-		
+	}
+	@media screen and (max-height: 450px){
+		height: @head-height - 40;
+		h1{
+			height: 30px;
+			line-height: 22px;
+			font-size: 26px;
+			padding-top: 8px;
+			margin-bottom: 10px;
+		}
 	}
 	@media screen and (max-width: 500px){
+		height: @head-height - 40;
 		h1{
-			font-size: 30px;
+			height: 30px;
+			line-height: 22px;
+			font-size: 26px;
+			padding-top: 8px;
+			margin-bottom: 10px;
 		}
 	}
 	.type{
-		display: inline-block;
-				
+		display: inline-block;				
 		margin: 0 auto;
 		&:after{
 			display: block;
@@ -48,6 +66,16 @@ header{
 			height: 30px;
 			line-height: 30px;
 			width: 80px;
+			@media screen and (max-height: 450px){
+				height: 20px;
+				line-height: 20px;
+				width: 50px;
+			}
+			@media screen and (max-width: 500px){
+				height: 20px;
+				line-height: 20px;
+				width: 50px;
+			}
 			border-top: solid 1px #fff;
 	        border-right: solid 1px #fff;
 	        border-bottom: solid 1px #fff;
@@ -65,12 +93,19 @@ header{
 		        background: #fff;
 		        color: #000;
 		    }
+		    //@media screen and(max-width:500px)
 		}
 	}
 }
 .list,.canvas{
 	position: absolute;
-	top: @head-height + @body-padding * 2;
+	top: @head-height + @body-padding * 1.5;
+	@media screen and (max-height: 450px){
+		top: @head-height - 30px + @body-padding * 2 - 50px;
+	}
+	@media screen and (max-width: 500px){
+		top: @head-height - 30px + @body-padding * 2 - 50px;
+	}
 	bottom: @body-padding;
 }
 .list{
@@ -97,6 +132,9 @@ header{
 			height: 30px;
 			line-height: 30px;
 			cursor: pointer;
+			white-space:nowrap; 
+			overflow:hidden; 
+			text-overflow:ellipsis;
 			&.play{
 				color: green;
 			}
@@ -107,6 +145,6 @@ header{
 	}
 }
 .canvas{
-	left: @list-width + @body-padding * 2;
+	left: calc(~"@{list-width} + "(@body-padding * 2));
 	right: @body-padding;
 }
