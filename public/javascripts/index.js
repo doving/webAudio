@@ -80,9 +80,6 @@ function Render(){
 	var o = null;	
 	return function(){
 		ctx.fillStyle = ARR.linearGradient;
-		if(isMobile && Render.type == "Dot"){
-			ctx.fillStyle = "orange";
-		}
 		var w = Math.round(WIDTH / SIZE),
 		cgap = Math.round(w * 0.3);
 		cw = w - cgap;
@@ -98,19 +95,22 @@ function Render(){
 				o.x > WIDTH + 2 * r && (o.x = -r);
 
 				//开始路径，绘画圆
-			    ctx.beginPath();
-			    ctx.arc(x, y, r, 0, Math.PI*2, true);
-
-			    //渐变填充
+				ctx.beginPath();
+				ctx.arc(x, y, r, 0, Math.PI*2, true);
+			    
 			    if(!isMobile){
+			    	ctx.strokeStyle = ARR[i].color;
+			    	ctx.stroke();
+			    }else{
+			    //渐变填充
 			    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 				    gradient.addColorStop(0, '#fff');
 				    gradient.addColorStop(this[i]/280, o.color);
 				    gradient.addColorStop(1, '#000');
 				    ctx.fillStyle = gradient;
+				    ctx.fill();
 			    }
 			    
-			    ctx.fill();
 			}
 			if(Render.type == 'Column'){
 				var h = this[i] / 280 * HEIGHT;
