@@ -95,18 +95,18 @@ header{
 }
 .media-list-canvas(){
 	top: @head-height + @body-padding * 2 - 80px;
-	bottom: @body-padding;
+	/*bottom: @body-padding;
 	height: -webkit-calc(~"100% - "(@head-height + @body-padding*2 - 70px));
 	height: -moz-calc(~"100% - "(@head-height + @body-padding*2 - 70px));
-	height: calc(~"100% - "(@head-height + @body-padding*2 - 70px));
+	height: calc(~"100% - "(@head-height + @body-padding*2 - 70px));*/
 }
 .list,.canvas{
 	position: absolute;
 	top: @head-height + @body-padding * 1.5;
-	//bottom: @body-padding;
-	height: -webkit-calc(~"100% - "(@head-height + @body-padding*2));
+	bottom: @body-padding / 2;
+	/*height: -webkit-calc(~"100% - "(@head-height + @body-padding*2));
 	height: -moz-calc(~"100% - "(@head-height + @body-padding*2));
-	height: calc(~"100% - "(@head-height + @body-padding*2));	
+	height: calc(~"100% - "(@head-height + @body-padding*2));*/
 	@media screen and (max-height: 450px){
 		.media-list-canvas();
 	}
