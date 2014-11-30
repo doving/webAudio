@@ -1,4 +1,3 @@
-
 var $ = function(s){return document.querySelector(s);}
 var box = $("#canvas");
 var canvas = document.createElement("canvas");
@@ -46,29 +45,22 @@ function getArr(){
 	//创建线性渐变对象，以便绘制柱状图使用
 	ARR = [];
 	ARR.linearGradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
-	ARR.linearGradient.addColorStop(0, '#0f0');
+	ARR.linearGradient.addColorStop(0, 'green');
 	ARR.linearGradient.addColorStop(0.5, '#ff0');
-	ARR.linearGradient.addColorStop(1, '#f00');
-
-	
+	ARR.linearGradient.addColorStop(1, '#f00');	
 
 	for(var i = 0;i < SIZE; i++){
 		var x =  random(0, WIDTH),
 			y = random(0, HEIGHT),
-			color = 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')';
-		var gradient = ctx.createRadialGradient(x, y, 0, x, y, 50);
+			color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',0)';
 
-		gradient.addColorStop(0, '#fff');
-		gradient.addColorStop(0.5, color);
-		gradient.addColorStop(1, '#000');
 		ARR.push({
 			x: x,
 			y: y,
 			color: color,
 			dx: random(1, 4),
 			dy: random(1, 5),
-			cap: 0,
-			radialGradient: gradient
+			cap: 0
 		});
 	}
 }
@@ -89,31 +81,31 @@ function Render(){
 			if(Render.type == 'Dot'){
 				var x = o.x;
 				y = o.y,
-				r = Math.round((this[i]/4+10)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/800);
+				r = Math.round((this[i]/2+25)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/800);
 
 				o.x += o.dx;
-				o.x > WIDTH + 2 * r && (o.x = -r);
+				o.x > WIDTH - r && (o.x = r);
 
 				//开始路径，绘画圆
 				ctx.beginPath();
 				ctx.arc(x, y, r, 0, Math.PI*2, true);
 		    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 			    gradient.addColorStop(0, '#fff');
-			    gradient.addColorStop(this[i]/280, o.color);
-			    gradient.addColorStop(1, '#000');
+			    gradient.addColorStop(this[i]/460 + 0.4, o.color);
+			    gradient.addColorStop(1, 'rgba(0,0,0,0)');
 			    ctx.fillStyle = gradient;
 			    ctx.fill();			    
 			}
 			if(Render.type == 'Column'){
 				var h = this[i] / 280 * HEIGHT;
-				if(--ARR[i].cap < cw){
-					ARR[i].cap = cw;
+				if(--ARR[i].cap < 10){
+					ARR[i].cap = 10;
 				};
 				if(h > 0 && (ARR[i].cap < h + 40)){
 					ARR[i].cap = h + 40 > HEIGHT ? HEIGHT : h + 40;
 				}
 				//console.log(ARR[i].cap);
-				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, cw);
+				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, 10);
 				ctx.fillRect(w * i, HEIGHT - h, cw, h);
 			}
 			
@@ -122,20 +114,20 @@ function Render(){
 }
 
 Render.type = "Dot";
-
-var visualizer = new MusicVisualizer(SIZE * 2, function(){
-	if($(".play")){
-		$(".play").nextElementSibling ? $(".play").nextElementSibling.click() : lis[0].click();
-	}else{
-		lis[0].click();
-	}
+var lis = document.querySelectorAll(".music-list li");
+var visualizer = new MusicVisualizer({
+	size: SIZE, 
+	onended: function(){
+		if($(".play")){
+			$(".play").nextElementSibling ? $(".play").nextElementSibling.click() : lis[0].click();
+		}else{
+			lis[0].click();
+		}
+	},
+	visualizer: Render()
 });
 
-visualizer.visualize(Render())
-
-var lis = document.querySelectorAll(".music-list li");
 !function(){
-	
 	for(var i = 0; i < lis.length; i++){
 		lis[i].onclick = function(){
 			visualizer.play('/media/'+this.title);
@@ -161,11 +153,10 @@ $("#upload").onchange = function(){
 	}
 	fr.readAsArrayBuffer(file);
 	$(".play") && ($(".play").className = "");
-};
-
-var types = document.querySelectorAll(".type li");
+}
 
 !function(){
+	var types = document.querySelectorAll(".type li");
 	for(var i = 0; i < types.length; i++){
 		types[i].onclick = function(){
 			for(var j = 0; j < types.length; j++){

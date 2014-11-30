@@ -1,77 +1,132 @@
-function MusicVisualizer(size, endcallback){
+function MusicVisualizer(options){
+	//播放过的bufferSource的buffer对象
+	this.buffer = [];
+	//当前正在播放的bufferSource
 	this.source = null;
-	this.audioContext = new (window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext)();
-	this.analyser = this.audioContext.createAnalyser();
-	this.analyser.fftSize = size;
-	//this.jsnode = this.audioContext.createScriptProcessor();
-	this.analyser.connect(this.audioContext.destination);
-	//this.jsnode.connect(this.audioContext.destination);
-	this.endFun = endcallback;
-	this.forceStop = false;
+	//当前资源的path
+	this.path = "";
+	//播完后的回调
+	this.onended = options.onended;
+	//unit8Array的长度
+	this.size = options.size;
+	//可视化调用的绘图函数
+	this.visualizer = options.visualizer;
+	MusicVisualizer.visualize(this);
 }
 
+//保存一个实例化的audioContext对象
+MusicVisualizer.audioContext = new (window.AudioContext ||window.webkitAudioContext || window.mozAudioContext)();
+MusicVisualizer.analyser = MusicVisualizer.audioContext.createAnalyser();
+MusicVisualizer.analyser.connect(MusicVisualizer.audioContext.destination);
+
+//检测是否为function
 MusicVisualizer.isFunction = function(fun){
 	return Object.prototype.toString.call(fun) == "[object Function]";
 }
 
-MusicVisualizer.prototype.decode = function(arraybuffer){
-	var self = this;
-	this.audioContext.decodeAudioData(arraybuffer, function(buffer){
-		var bufferSourceNode = self.audioContext.createBufferSource();
-		bufferSourceNode.buffer = buffer; 
-		bufferSourceNode.start = bufferSourceNode.start || bufferSourceNode.noteOn;
-		bufferSourceNode.start(0);
-		self.source = bufferSourceNode;
-		self.source.connect(self.analyser);
-		if(self.endFun && MusicVisualizer.isFunction(self.endFun)){
-			self.source.onended = function(fun){
-				if(self.forceStop){
-					self.forceStop = false;
-					return;
-				}
-				self.endFun();
-			}
-		}
-	},function(err){
+/*从指定的路径加载音频资源
+ *@param path string,音频资源路径
+ *@param fun function,decode成功后的回调函数，将arraybuffer作为this
+*/
+MusicVisualizer.load = function(path, fun){
+	var xhr = new window.XMLHttpRequest();
+	xhr.open("GET", path, true);
+	xhr.responseType = "arraybuffer";
+
+	xhr.onload = function(){
+		MusicVisualizer.isFunction(fun) && fun.call(xhr.response);
+	}
+	xhr.send();
+}
+
+//将arraybuffer数据decode得到buffer
+//成功后将buffer作为fun回调的this
+MusicVisualizer.decode = function(arraybuffer, fun){
+	MusicVisualizer.audioContext.decodeAudioData(arraybuffer, function(buffer){
+		MusicVisualizer.isFunction(fun) && fun.call(buffer);
+	}, function(err){
 		console.log(err);
-	});
+	})
+}
+
+//播放buffere,fun为播放结束后的回调
+MusicVisualizer.play = function(bufferSource, onended){
+	bufferSource.connect(MusicVisualizer.analyser);
+	//兼容较老的API
+	bufferSource.start = bufferSource.start || bufferSource.noteOn;
+	bufferSource.start(0);
+	//为该bufferSource绑定onended事件
+	MusicVisualizer.isFunction(onended) && (bufferSource.onended = onended);
+}
+
+//停止bufferSource
+MusicVisualizer.stop = function(bufferSource){
+	//兼容较老的API
+	bufferSource.stop = bufferSource.stop || bufferSource.noteOff;
+	bufferSource.stop(0);
+	//停止后移除之前为该bufferSource绑定的onended事件
+	bufferSource.onended = window.undefined;
+}
+
+/*可视化当前正在播放的音频
+ *@param mv MusicVisualizer,MusicVisualizer的实例对象
+*/
+MusicVisualizer.visualize = function(mv){
+	MusicVisualizer.analyser.fftSize = mv.size * 2;
+	var arr = new Uint8Array(MusicVisualizer.analyser.frequencyBinCount);
+	var requestAnimationFrame = window.requestAnimationFrame || 
+								window.webkitRequestAnimationFrame || 
+								window.msRequestAnimationFrame || 
+								window.mzRequestAnimationFrame;
+	function v(){
+		MusicVisualizer.analyser.getByteFrequencyData(arr);
+		mv.visualizer.call(arr);
+		requestAnimationFrame(v);
+	}
+	MusicVisualizer.isFunction(mv.visualizer) && requestAnimationFrame(v);
+}
+
+
+MusicVisualizer.prototype.decode = function(arraybuffer, fun){
+	var self = this;
+	MusicVisualizer.decode(arraybuffer, function(){
+		var bufferSourceNode = MusicVisualizer.audioContext.createBufferSource();
+		bufferSourceNode.buffer = this;
+		fun.call(bufferSourceNode);
+	})
 }
 
 MusicVisualizer.prototype.play = function(path){
-	if(this.source){
-		this.source.stop = this.source.stop || this.source.noteOff;
-		this.source.stop(0);		
-		this.forceStop = true;
-	}
-	this.source = null;
-	if(path instanceof ArrayBuffer){
-		this.decode(path);
-	}
-	if(typeof(path) == 'string'){		
-		var xhr = new window.XMLHttpRequest();
-		xhr.open("GET", path, true);
-		xhr.responseType = "arraybuffer";
-		var self = this;
-		xhr.onload = function(){
-			self.decode(xhr.response);
-		}
-		xhr.send();
-	}	
-}
-
-MusicVisualizer.prototype.visualize = function(fun){
-	var arr = new Uint8Array(this.analyser.frequencyBinCount);
 	var self = this;
+	self.path = path;	
+	self.source && MusicVisualizer.stop(self.source);
 
-	/*this.jsnode.onaudioprocess = function(){
-		self.analyser.getByteFrequencyData(arr);
-		MusicVisualizer.isFunction(fun) && fun.call(arr);
-	}*/
-	var requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.mzRequestAnimationFrame;
-	function v(){
-		self.analyser.getByteFrequencyData(arr);
-		fun.call(arr);
-		requestAnimationFrame(v);
+	if(path instanceof ArrayBuffer){
+		self.decode(path, function(){
+			self.source = this;
+			MusicVisualizer.play(this, self.onended);
+		});
 	}
-	MusicVisualizer.isFunction(fun) && requestAnimationFrame(v);
+	if(typeof(path) === 'string'){
+		if(path in self.buffer){
+			MusicVisualizer.stop(self.source);
+
+			var bufferSource = MusicVisualizer.audioContext.createBufferSource();
+			bufferSource.buffer = self.buffer[path];	
+
+			MusicVisualizer.play(bufferSource, self.onended);
+			self.source = bufferSource;
+		}else{
+			MusicVisualizer.load(path, function(){
+				self.decode(this, function(){
+					//将decode好的buffer缓存起来
+					self.buffer[path] = this.buffer;
+
+					if(self.path != path)return;
+					self.source = this;
+					MusicVisualizer.play(this, self.onended);
+				});
+			})
+		}
+	}
 }
