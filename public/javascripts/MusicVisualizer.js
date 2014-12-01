@@ -3,8 +3,10 @@ function MusicVisualizer(options){
 	this.buffer = [];
 	//当前正在播放的bufferSource
 	this.source = null;
-	//当前资源的path
+	//当前准备播放的资源的path
 	this.path = "";
+	//当前正在播放的资源的path
+	this.currentPath = "";
 	//播完后的回调
 	this.onended = options.onended;
 	//unit8Array的长度
@@ -85,7 +87,6 @@ MusicVisualizer.visualize = function(mv){
 	}
 	MusicVisualizer.isFunction(mv.visualizer) && requestAnimationFrame(v);
 }
-
 
 MusicVisualizer.prototype.decode = function(arraybuffer, fun){
 	var self = this;
