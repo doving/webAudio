@@ -9,6 +9,9 @@ section,canvas,input,button,form,textarea,select{
 	color: #fff;
 	box-sizing: border-box;
 }
+a{
+	text-decoration: none;
+}
 html,body{
 	height: 100%;
 }
@@ -90,6 +93,42 @@ header{
 		        color: #000;
 		    }
 		    //@media screen and(max-width:500px)
+		}
+	}
+	.fork{
+		position: absolute;
+		top:0;
+		right: 0;
+		font-size: 16px;
+		height: @head-height*1.2;
+		width: @head-height*1.2;
+		overflow: hidden;
+		.border{			
+			height: 32px;
+			padding: 2px 0;
+			width: @head-height * 1.8;
+			background: orange;
+			margin: @head-height/2.6 0 0 @head-height/-5.8;
+			transform:rotate(46deg);
+			a{
+				display: block;
+				text-align: center;
+				height: 28px;
+				
+				line-height: 28px;
+				border: dashed 1px #000;
+			}
+			
+		}
+		@media screen and (max-height: 450px){
+			transform:scale(0.6);
+			top: -30px;
+			right: -30px;
+		}
+		@media screen and (max-width: 500px){
+			transform:scale(0.6);
+			top: -30px;
+			right: -30px;
 		}
 	}
 }
