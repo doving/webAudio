@@ -86,6 +86,7 @@ function Render(){
 		cgap = Math.round(w * 0.3);
 		cw = w - cgap;
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
 		for(var i = 0; i < SIZE; i++){		
 			o = ARR[i];
 			if(Render.type == 'Dot'){
@@ -127,7 +128,7 @@ function Render(){
 					ARR[i].cap = h + 40 > HEIGHT ? HEIGHT : h + 40;
 				}
 				//console.log(ARR[i].cap);
-				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, ARR[i].cheight);
+				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, ARR[i].cheight);			
 				ctx.fillRect(w * i, HEIGHT - h, cw, h);
 			}
 			
