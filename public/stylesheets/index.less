@@ -37,6 +37,15 @@ body{
 		margin-bottom: 10px;
 	}
 }
+.media-header-fork{
+	transform:scale(0.6);
+	-ms-transform:scale(0.6);
+	-moz-transform:scale(0.6);
+	-webkit-transform:scale(0.6);
+	-o-transform:scale(0.6);
+	top: -30px;
+	right: -30px;
+}
 header{
 	height: @head-height;
 	h1{
@@ -110,6 +119,10 @@ header{
 			background: orange;
 			margin: @head-height/2.6 0 0 @head-height/-5.8;
 			transform:rotate(46deg);
+			-ms-transform:rotate(46deg);
+			-moz-transform:rotate(46deg);
+			-webkit-transform:rotate(46deg);
+			-o-transform:rotate(46deg);
 			a{
 				display: block;
 				text-align: center;
@@ -121,14 +134,10 @@ header{
 			
 		}
 		@media screen and (max-height: 450px){
-			transform:scale(0.6);
-			top: -30px;
-			right: -30px;
+			.media-header-fork();
 		}
 		@media screen and (max-width: 500px){
-			transform:scale(0.6);
-			top: -30px;
-			right: -30px;
+			.media-header-fork();
 		}
 	}
 }
