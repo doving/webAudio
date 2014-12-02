@@ -20,6 +20,7 @@ body{
 	text-align: center;
 	background: #000;
 	font: 16px "微软雅黑",Georgia,Serif;
+	overflow: hidden;
 	@media screen and (max-height: 450px){
 		font-size: 12px;
 	}
@@ -204,4 +205,87 @@ header{
 	left: -moz-calc(~"@{list-width} + "(@body-padding * 1.5));
 	left: calc(~"@{list-width} + "(@body-padding * 1.5));
 	right: @body-padding;
+}
+@-webkit-keyframes animate{
+	0% {
+		transform:scale(1);
+	}
+	50% {
+		transform:scale(2.2);
+	}
+	100% {
+		transform:scale(1);
+	}
+}
+.load(@delay){
+	-webkit-animation-name: animate;
+	-webkit-animation-duration: 1.4s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-delay: @delay;
+}
+.loading-box{
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	line-height: 100%;
+	font-size: 30px;
+	background: rgba(255,255,255,.4);
+	ul{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -16px;
+		margin-left: -80px; 
+		&:after{
+			display: block;
+			content: "";
+			clear:both;
+		}
+		li{
+			float: left;
+			height: 14px;
+			width: 14px;
+			background: green;
+			margin: 10px;
+			border-radius: 100%;
+			&.l{
+				.load(0s);
+			}
+			&.o{
+				.load(0.2s);
+			}
+			&.a{
+				.load(0.4s);
+			}
+			&.d{
+				.load(0.6s);
+			}
+			&.i{
+				.load(0.8s);
+			}
+		}
+	}
+	.play{
+		display: none;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -28px;
+		margin-left: -28px; 
+		height: 54px;
+		width: 54px;
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 52px;
+		background: green;
+		border: solid 2px #fff;
+		border-radius: 100%; 
+		cursor: pointer;
+		&:hover{
+
+		}
+	}
 }

@@ -1,6 +1,6 @@
 function MusicVisualizer(options){
 	//播放过的bufferSource的buffer对象
-	this.buffer = [];
+	this.buffer = {};
 
 	//当前正在播放的bufferSource
 	this.source = null;
@@ -16,6 +16,9 @@ function MusicVisualizer(options){
 
 	//可视化调用的绘图函数
 	this.visualizer = options.visualizer;
+
+	//初次加载第一首音乐成功时回调函数，针对苹果禁止自动播放用
+	this.initCallback = null;
 
 	MusicVisualizer.visualize(this);
 }
@@ -140,10 +143,18 @@ MusicVisualizer.prototype.play = function(path){
 					//将decode好的buffer缓存起来
 					//self.buffer[path] = this.buffer;
 
-					self.source = this;
+					
 					MusicVisualizer.play(this, self.onended);
+
+					self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
+
+					self.source = this;
 				});
 			})
 		}
 	}
+}
+
+MusicVisualizer.prototype.addinit = function(fun){
+	this.initCallback = fun;
 }

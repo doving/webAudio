@@ -25,16 +25,26 @@
   	</header>  	
     <div class="list" id="list">
     	<button class="music-add" id="add">
-    		Local music     
+    		Local music
     	</button>
       <input class="upload" type="file" id="upload" />
-    	<ul class="music-list">
+    	<ul class="music-list" id="music-list">
         <% music.forEach(function(name){ %>
         <li title="<%= name %>"><%= name %></li>
         <% }) %>
     	</ul>
     </div>
     <div class="canvas" id="canvas">
+    </div>
+    <div class="loading-box" id="loading-box">
+      <ul id="loading">
+        <li class='l'></li>
+        <li class='o'></li>
+        <li class='a'></li>
+        <li class='d'></li>
+        <li class='i'></li>
+      </ul>
+      <div class="play" id="play">PLAY</div>
     </div>
     <script type="text/javascript" src='/javascripts/MusicVisualizer.js'></script>
     <script type="text/javascript" src='/javascripts/index.js'></script>

@@ -13,6 +13,7 @@ var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜�
 ARR.dotMode = "random";
 isMobile = false;
 isApple = false;
+
 !function(){
 	var u = window.navigator.userAgent;
 	var m = /(Android)|(iPhone)|(iPad)|(iPod)/i;
@@ -168,8 +169,18 @@ $("#add").onclick = function(){
 }
 
 if(isApple){
-	$("#add").innerHTML = "Play";
+	$("#add").style.display = "none";
+	$("#music-list").style.top = 0;
 	$("#add").onclick = function(){
+		visualizer.source.start(0);
+	}
+	$("#loading-box").style.display = "block";
+	visualizer.addinit(function(){
+		$("#loading").style.display = "none";
+		$("#play").style.display = "block";
+	});
+	$("#play").onclick = function(){
+		$("#loading-box").style.display = "none";
 		visualizer.source.start(0);
 	}
 };
