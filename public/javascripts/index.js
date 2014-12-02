@@ -69,7 +69,8 @@ function getArr(){
 			dx: ARR.dotMode == "random" ? ran : 0,
 			dx2: ran,
 			dy: random(1, 5),
-			cap: 0
+			cap: 0,
+			cheight : 10
 		});
 	}
 }
@@ -91,24 +92,26 @@ function Render(){
 				//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 				var x = o.x;
 				y = o.y,
-				r = Math.round((this[i]/2+25)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/800);
-
+				r = Math.round((this[i]/2+25)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 500 : 800));
 				o.x += o.dx;
 				//o.x += 2;
-				o.x > WIDTH - r && (o.x = r);
+				o.x > (WIDTH + r) && (o.x = - r);
 
 				//开始路径，绘画圆
 				ctx.beginPath();
 				ctx.arc(x, y, r, 0, Math.PI*2, true);
 		    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 			    gradient.addColorStop(0, "rgba(255,255,255,"+(this[i]/280+.5)+")");
-			    gradient.addColorStop(this[i]/280, o.color.replace("opacity",1-this[i]/220));
+
+			    var per = this[i]/(isMobile ? 160 : 250);
+			    per = per > 1 ? 1 : per;
+
+			    gradient.addColorStop(per, o.color.replace("opacity",1-this[i]/(isMobile ? 160 : 220)));
 			    gradient.addColorStop(1, 'rgba(0,0,0,0)');
 			    /*for(var j = 0, l = Math.round(this[i]/10); j < l; j++){
 			    	//ctx.beginPath();
 			    	ctx.moveTo(x ,y);
-			    	ctx.quadraticCurveTo(x+random(-30, 30), y+random(-30, 30), random(x + 100), random(y + 100));
-			    	
+			    	ctx.quadraticCurveTo(x+random(-30, 30), y+random(-30, 30), random(x + 100), random(y + 100));			    	
 			    }*/
 			    //ctx.stroke();
 			    ctx.fillStyle = gradient;
@@ -116,14 +119,15 @@ function Render(){
 			}
 			if(Render.type == 'Column'){
 				var h = this[i] / 280 * HEIGHT;
-				if(--ARR[i].cap < 10){
-					ARR[i].cap = 10;
+				ARR[i].cheight > cw && (ARR[i].cheight = cw);
+				if(--ARR[i].cap < ARR[i].cheight){
+					ARR[i].cap = ARR[i].cheight;
 				};
 				if(h > 0 && (ARR[i].cap < h + 40)){
 					ARR[i].cap = h + 40 > HEIGHT ? HEIGHT : h + 40;
 				}
 				//console.log(ARR[i].cap);
-				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, 10);
+				ctx.fillRect(w * i, HEIGHT - ARR[i].cap, cw, ARR[i].cheight);
 				ctx.fillRect(w * i, HEIGHT - h, cw, h);
 			}
 			
@@ -165,7 +169,7 @@ $("#add").onclick = function(){
 if(isApple){
 	$("#add").innerHTML = "Play";
 	$("#add").onclick = function(){
-		visualizer.source.start(02);
+		visualizer.source.start(0);
 	}
 };
 
