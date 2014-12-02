@@ -10,15 +10,23 @@ var HEIGHT,//canvas高
 var SIZE = 64;//音乐片段数
 
 var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
-
-var isMobile = (function(){
+ARR.dotMode = "random";
+isMobile = false;
+isApple = false;
+!function(){
 	var u = window.navigator.userAgent;
-	var re = /(Android)|(iPhone)|(iPad)|(iPod)/i;
-	//Android和苹果设备则设置音乐片段为16
-	return re.test(u);
-})();
+	var m = /(Android)|(iPhone)|(iPad)|(iPod)/i;
+	if(m.test(u)){
+		isMobile = true;
+	}
+	var ap = /(iPhone)|(iPad)|(iPod)|(Mac)/i;
+	if(ap.test(u)){
+		isApple = true;
+	}
+}();
 
-isMobile && (SIZE = 16);
+//Android和苹果设备则设置音乐片段为16
+isMobile && (SIZE = 32);
 
 //初始化heigth，width以及canvas的宽高
 function init(){
@@ -43,7 +51,7 @@ function random(min, max){
 
 function getArr(){
 	//创建线性渐变对象，以便绘制柱状图使用
-	ARR = [];
+	ARR.length = 0;
 	ARR.linearGradient = ctx.createLinearGradient(0, HEIGHT, 0, 0);
 	ARR.linearGradient.addColorStop(0, 'green');
 	ARR.linearGradient.addColorStop(0.5, '#ff0');
@@ -52,13 +60,14 @@ function getArr(){
 	for(var i = 0;i < SIZE; i++){
 		var x =  random(0, WIDTH),
 			y = random(0, HEIGHT),
-			color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',0)';
-
+			color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',opacity)',
+			ran = random(1, 4);
 		ARR.push({
 			x: x,
 			y: y,
 			color: color,
-			dx: random(1, 4),
+			dx: ARR.dotMode == "random" ? ran : 0,
+			dx2: ran,
 			dy: random(1, 5),
 			cap: 0
 		});
@@ -79,20 +88,29 @@ function Render(){
 		for(var i = 0; i < SIZE; i++){		
 			o = ARR[i];
 			if(Render.type == 'Dot'){
+				//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 				var x = o.x;
 				y = o.y,
 				r = Math.round((this[i]/2+25)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/800);
 
 				o.x += o.dx;
+				//o.x += 2;
 				o.x > WIDTH - r && (o.x = r);
 
 				//开始路径，绘画圆
 				ctx.beginPath();
 				ctx.arc(x, y, r, 0, Math.PI*2, true);
 		    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-			    gradient.addColorStop(0, '#fff');
-			    gradient.addColorStop(this[i]/460 + 0.4, o.color);
+			    gradient.addColorStop(0, "rgba(255,255,255,"+(this[i]/280+.5)+")");
+			    gradient.addColorStop(this[i]/280, o.color.replace("opacity",1-this[i]/220));
 			    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+			    /*for(var j = 0, l = Math.round(this[i]/10); j < l; j++){
+			    	//ctx.beginPath();
+			    	ctx.moveTo(x ,y);
+			    	ctx.quadraticCurveTo(x+random(-30, 30), y+random(-30, 30), random(x + 100), random(y + 100));
+			    	
+			    }*/
+			    //ctx.stroke();
 			    ctx.fillStyle = gradient;
 			    ctx.fill();			    
 			}
@@ -144,6 +162,13 @@ $("#add").onclick = function(){
 	$("#upload").click();
 }
 
+if(isApple){
+	$("#add").innerHTML = "Play";
+	$("#add").onclick = function(){
+		visualizer.source.start(02);
+	}
+};
+
 $("#upload").onchange = function(){
 	var file = this.files[0];
 	var fr = new FileReader();
@@ -167,3 +192,13 @@ $("#upload").onchange = function(){
 		}
 	}
 }()
+
+canvas.onclick = function(){
+	if(Render.type == 'Dot'){
+		console.log(ARR.dotMode);
+		for(var i = 0;i < SIZE; i++){
+			ARR.dotMode == "random" ? ARR[i].dx = 0 : ARR[i].dx = ARR[i].dx2;
+		}
+		ARR.dotMode = ARR.dotMode == "static" ? "random" : "static";
+	}
+}
