@@ -206,25 +206,94 @@ header{
 	left: calc(~"@{list-width} + "(@body-padding * 1.5));
 	right: @body-padding;
 }
-@-webkit-keyframes animate{
+@keyframes loading{
 	0% {
 		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
 	}
 	50% {
 		transform:scale(2.2);
+		-webkit-transform:scale(2.2);
+		-moz-transform:scale(2.2);
+		-o-transform:scale(2.2);
 	}
 	100% {
 		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+}
+@-moz-keyframes loading{
+	0% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+	50% {
+		transform:scale(2.2);
+		-webkit-transform:scale(2.2);
+		-moz-transform:scale(2.2);
+		-o-transform:scale(2.2);
+	}
+	100% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+}
+@-o-keyframes loading{
+	0% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+	50% {
+		transform:scale(2.2);
+		-webkit-transform:scale(2.2);
+		-moz-transform:scale(2.2);
+		-o-transform:scale(2.2);
+	}
+	100% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+}
+@-webkit-keyframes loading{
+	0% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
+	}
+	50% {
+		transform:scale(2.2);
+		-webkit-transform:scale(2.2);
+		-moz-transform:scale(2.2);
+		-o-transform:scale(2.2);
+	}
+	100% {
+		transform:scale(1);
+		-webkit-transform:scale(1);
+		-moz-transform:scale(1);
+		-o-transform:scale(1);
 	}
 }
 .load(@delay){
-	-webkit-animation-name: animate;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count:infinite;
-	-webkit-animation-delay: @delay;
+	animation: loading 1.4s linear @delay infinite alternate;
+	-moz-animation: loading 1.4s linear @delay infinite alternate;
+	-webkit-animation: loading 1.4s linear @delay infinite alternate;
+	-o-animation: loading 1.4s linear @delay infinite alternate;
 }
 .loading-box{
-	display: none;
+	//display: none;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -234,6 +303,7 @@ header{
 	font-size: 30px;
 	background: rgba(255,255,255,.4);
 	ul{
+		//display: none;
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -273,13 +343,13 @@ header{
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		margin-top: -28px;
-		margin-left: -28px; 
-		height: 54px;
-		width: 54px;
+		margin-top: -32px;
+		margin-left: -32px; 
+		height: 62px;
+		width: 62px;
 		font-size: 16px;
 		font-weight: bold;
-		line-height: 52px;
+		line-height: 60px;
 		background: green;
 		border: solid 2px #fff;
 		border-radius: 100%; 
