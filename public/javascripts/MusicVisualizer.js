@@ -5,8 +5,8 @@ function MusicVisualizer(options){
 	//当前正在播放的bufferSource
 	this.source = null;
 
-	//当前选择的资源的path
-	this.path = "";
+	//选择过的资源数的累计值
+	this.count = 0;
 
 	//播完后的回调
 	this.onended = options.onended;
@@ -113,7 +113,8 @@ MusicVisualizer.prototype.decode = function(arraybuffer, fun){
 
 MusicVisualizer.prototype.play = function(path){
 	var self = this;
-	self.path = path;	
+	var count = ++self.count;
+
 	self.source && MusicVisualizer.stop(self.source);
 
 	if(path instanceof ArrayBuffer){
@@ -134,11 +135,11 @@ MusicVisualizer.prototype.play = function(path){
 		}else{
 			MusicVisualizer.load(path, function(){
 
-				if(path != self.path)return;
+				if(count != self.count)return;
 
 				self.decode(this, function(){
 
-					if(path != self.path)return;
+					if(count != self.count)return;
 
 					//将decode好的buffer缓存起来
 					//self.buffer[path] = this.buffer;
