@@ -12,15 +12,53 @@ section,canvas,input,button,form,textarea,select{
 a{
 	text-decoration: none;
 }
+input[type='range'] {
+	-webkit-appearance: none;
+	background-color: gray;
+	height: 8px;
+	border-radius: 15px;
+	outline: none;
+	&::-webkit-slider-thumb{
+	    -webkit-appearance: none;
+	    height: 12px;
+	    width: 12px;
+	    background: #ddd;
+	    border-radius: 100%;
+	    border: none;
+	}
+	&::-moz-range-track{
+    height: 8px;
+    background: gray;
+    border-radius: 15px;
+    border: none;
+	}
+	&::-moz-range-thumb{
+	    height: 12px;
+	    width: 12px;
+	    background: #ddd;
+	    border: none;
+	    border-radius: 100%;
+	}
+}
+input.range{
+	&::-webkit-slider-thumb{
+    	height: 18px;
+    	width: 18px;
+	}
+	&::-moz-range-thumb{
+	    height: 18px;
+	    width: 18px;
+	}
+}
 html,body{
 	height: 100%;
+	overflow: hidden;
 }
 body{
 	position: relative;
 	text-align: center;
 	background: #000;
 	font: 16px "微软雅黑",Georgia,Serif;
-	overflow: hidden;
 	@media screen and (max-height: 450px){
 		font-size: 12px;
 	}

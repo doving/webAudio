@@ -27,6 +27,8 @@ function MusicVisualizer(options){
 MusicVisualizer.audioContext = new (window.AudioContext ||window.webkitAudioContext || window.mozAudioContext)();
 MusicVisualizer.analyser = MusicVisualizer.audioContext.createAnalyser();
 MusicVisualizer.analyser.connect(MusicVisualizer.audioContext.destination);
+MusicVisualizer.gainNode = MusicVisualizer.audioContext[MusicVisualizer.audioContext.createGain ? "createGain" : "createGainNode"]();
+MusicVisualizer.gainNode.connect(MusicVisualizer.audioContext.destination);
 
 //检测是否为function
 MusicVisualizer.isFunction = function(fun){
@@ -61,6 +63,7 @@ MusicVisualizer.decode = function(arraybuffer, fun){
 //播放buffere,fun为播放结束后的回调
 MusicVisualizer.play = function(bufferSource, onended){
 	bufferSource.connect(MusicVisualizer.analyser);
+	bufferSource.connect(MusicVisualizer.gainNode);
 
 	//兼容较老的API
 	bufferSource.start = bufferSource.start || bufferSource.noteOn;
@@ -144,7 +147,6 @@ MusicVisualizer.prototype.play = function(path){
 					//将decode好的buffer缓存起来
 					//self.buffer[path] = this.buffer;
 
-					
 					MusicVisualizer.play(this, self.onended);
 
 					self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
@@ -158,4 +160,7 @@ MusicVisualizer.prototype.play = function(path){
 
 MusicVisualizer.prototype.addinit = function(fun){
 	this.initCallback = fun;
+}
+MusicVisualizer.prototype.changeVolume = function(rate){
+	MusicVisualizer.gainNode.gain.value = 2 * rate - 1;
 }

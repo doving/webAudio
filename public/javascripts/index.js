@@ -169,6 +169,9 @@ $("#add").onclick = function(){
 }
 
 if(isApple){
+	if(isMobile){
+		$("#volume").className = "range";
+	}	
 	$("#add").style.display = "none";
 	$("#music-list").style.top = 0;
 	$("#add").onclick = function(){
@@ -211,10 +214,14 @@ $("#upload").onchange = function(){
 
 canvas.onclick = function(){
 	if(Render.type == 'Dot'){
-		console.log(ARR.dotMode);
+		//console.log(ARR.dotMode);
 		for(var i = 0;i < SIZE; i++){
 			ARR.dotMode == "random" ? ARR[i].dx = 0 : ARR[i].dx = ARR[i].dx2;
 		}
 		ARR.dotMode = ARR.dotMode == "static" ? "random" : "static";
 	}
+}
+$("#volume").onchange = function(){
+	//console.log(this.value,this.max);
+	visualizer.changeVolume(this.value/this.max);
 }
