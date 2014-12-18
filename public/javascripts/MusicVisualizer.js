@@ -26,7 +26,8 @@ function MusicVisualizer(options){
 //保存一个实例化的audioContext对象
 MusicVisualizer.audioContext = new (window.AudioContext ||window.webkitAudioContext || window.mozAudioContext)();
 MusicVisualizer.analyser = MusicVisualizer.audioContext.createAnalyser();
-MusicVisualizer.analyser.connect(MusicVisualizer.audioContext.destination);
+
+//保存控制音量的GainNode
 MusicVisualizer.gainNode = MusicVisualizer.audioContext[MusicVisualizer.audioContext.createGain ? "createGain" : "createGainNode"]();
 MusicVisualizer.gainNode.connect(MusicVisualizer.audioContext.destination);
 
@@ -63,7 +64,7 @@ MusicVisualizer.decode = function(arraybuffer, fun){
 //播放buffere,fun为播放结束后的回调
 MusicVisualizer.play = function(bufferSource, onended){
 	bufferSource.connect(MusicVisualizer.analyser);
-	bufferSource.connect(MusicVisualizer.gainNode);
+	MusicVisualizer.analyser.connect(MusicVisualizer.gainNode);
 
 	//兼容较老的API
 	bufferSource.start = bufferSource.start || bufferSource.noteOn;
@@ -93,7 +94,7 @@ MusicVisualizer.visualize = function(mv){
 
 	var requestAnimationFrame = window.requestAnimationFrame || 
 								window.webkitRequestAnimationFrame || 
-								window.msRequestAnimationFrame || 
+								window.oRequestAnimationFrame || 
 								window.mzRequestAnimationFrame;
 	function v(){
 		MusicVisualizer.analyser.getByteFrequencyData(arr);
@@ -162,5 +163,5 @@ MusicVisualizer.prototype.addinit = function(fun){
 	this.initCallback = fun;
 }
 MusicVisualizer.prototype.changeVolume = function(rate){
-	MusicVisualizer.gainNode.gain.value = 2 * rate - 1;
+	MusicVisualizer.gainNode.gain.value = rate * rate;
 }

@@ -10,7 +10,6 @@ router.get('/', function(req, res){
 			res.render('index', {title: 'passionate music', music: files});
 		}
 	});
-	
 });
 
 module.exports = router;
