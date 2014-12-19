@@ -49,7 +49,6 @@ MusicVisualizer.isFunction = function(fun){
  *@param fun function,decode成功后的回调函数，将arraybuffer作为this
 */
 MusicVisualizer.load = function(xhr, path, fun){
-	console.log(xhr);
 	xhr.abort();
 	xhr.open("GET", path, true);
 	xhr.responseType = "arraybuffer";
