@@ -59,27 +59,25 @@ MusicVisualizer.load = function(xhr, path, fun){
 	xhr.send();
 }
 
-//播放buffere,fun为播放结束后的回调
-MusicVisualizer.play = function(bufferSource, mv){
-	bufferSource.connect(mv.analyser);
+//播放mv对象的source,mv.onended为播放结束后的回调
+MusicVisualizer.play = function(mv){
+	mv.source.connect(mv.analyser);
 
 	//兼容较老的API
-	bufferSource.start = bufferSource.start || bufferSource.noteOn;
-	bufferSource.start(0);
+	mv.source[mv.source.start ? "start" : "noteOn"](0);
 
 	//为该bufferSource绑定onended事件
-	MusicVisualizer.isFunction(mv.onended) && (bufferSource.onended = mv.onended);
+	MusicVisualizer.isFunction(mv.onended) && (mv.source.onended = mv.onended);
 }
 
-//停止bufferSource
-MusicVisualizer.stop = function(bufferSource){
+//停止mv.source
+MusicVisualizer.stop = function(mv){
 
 	//兼容较老的API
-	bufferSource.stop = bufferSource.stop || bufferSource.noteOff;
-	bufferSource.stop(0);
+	mv.source[mv.source.stop ? "stop" : "noteOff"](0);
 
-	//停止后移除之前为该bufferSource绑定的onended事件
-	bufferSource.onended = window.undefined;
+	//停止后移除之前为mv.source绑定的onended事件
+	mv.source.onended = window.undefined;
 }
 
 /*可视化当前正在播放的音频
@@ -95,6 +93,7 @@ MusicVisualizer.visualize = function(mv){
 								window.mzRequestAnimationFrame;
 	function v(){
 		mv.analyser.getByteFrequencyData(arr);
+		//将分析得到的音频数据传递给mv.visualizer方法可视化
 		mv.visualizer.call(arr);
 		requestAnimationFrame(v);
 	}
@@ -119,12 +118,13 @@ MusicVisualizer.prototype.play = function(path){
 	var self = this;
 	var count = ++self.count;
 
-	self.source && MusicVisualizer.stop(self.source);
+	//停止当前正在播放的bufferSource
+	self.source && MusicVisualizer.stop(self);
 
 	if(path instanceof ArrayBuffer){
 		self.decode(path, function(){
 			self.source = this;
-			MusicVisualizer.play(this, self);
+			MusicVisualizer.play(self);
 		});
 	}
 	if(typeof(path) === 'string'){
@@ -133,9 +133,8 @@ MusicVisualizer.prototype.play = function(path){
 
 			var bufferSource = MusicVisualizer.ac.createBufferSource();
 			bufferSource.buffer = self.buffer[path];	
-
-			MusicVisualizer.play(bufferSource, self);
 			self.source = bufferSource;
+			MusicVisualizer.play(self);
 		}else{
 			MusicVisualizer.load(self.xhr, path, function(){
 
@@ -147,21 +146,29 @@ MusicVisualizer.prototype.play = function(path){
 
 					//将decode好的buffer缓存起来
 					//self.buffer[path] = this.buffer;
-
-					MusicVisualizer.play(this, self);
-
+					
 					self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
-
+					
 					self.source = this;
+
+					MusicVisualizer.play(self);
 				});
 			})
 		}
 	}
 }
 
+//直接播放当前的bufferSource，在苹果设备用户触发时调用
+MusicVisualizer.prototype.start = function(){
+	this.source && this.source[this.source.start ? "start" : "noteOn"](0);
+}
+
+//应用加载完毕，为苹果设备添加用户触发的事件
 MusicVisualizer.prototype.addinit = function(fun){
 	this.initCallback = fun;
 }
+
+//音量调节
 MusicVisualizer.prototype.changeVolume = function(rate){
 	this.gainNode.gain.value = rate * rate;
 }

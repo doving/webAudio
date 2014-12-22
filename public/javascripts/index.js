@@ -11,8 +11,8 @@ var SIZE = 64;//音乐片段数
 
 var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 ARR.dotMode = "random";
-isMobile = false;
-isApple = false;
+var isMobile = false;
+var isApple = false;
 
 !function(){
 	var u = window.navigator.userAgent;
@@ -94,14 +94,14 @@ function Render(){
 				//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 				var x = o.x;
 				y = o.y,
-				r = Math.round((this[i]/2+25)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 500 : 800));
+				r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 500 : 800));
 				o.x += o.dx;
 				//o.x += 2;
 				o.x > (WIDTH + r) && (o.x = - r);
 
 				//开始路径，绘画圆
 				ctx.beginPath();
-				ctx.arc(x, y, r, 0, Math.PI*2, true);
+				ctx.arc(x, y, r, 0, Math.PI * 2, true);
 		    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 			    gradient.addColorStop(0, "rgba(255,255,255,"+(this[i]/280+.5)+")");
 
@@ -114,8 +114,8 @@ function Render(){
 			    	//ctx.beginPath();
 			    	ctx.moveTo(x ,y);
 			    	ctx.quadraticCurveTo(x+random(-30, 30), y+random(-30, 30), random(x + 100), random(y + 100));			    	
-			    }*/
-			    //ctx.stroke();
+			    }
+			    //ctx.stroke();*/
 			    ctx.fillStyle = gradient;
 			    ctx.fill();			    
 			}
@@ -184,7 +184,7 @@ if(isApple){
 	});
 	$("#play").onclick = function(){
 		$("#loading-box").style.display = "none";
-		visualizer.source.start(0);
+		visualizer.start();
 	}
 };
 
