@@ -8,7 +8,7 @@
 	var HEIGHT,//canvas高
 	    WIDTH;//canvs 宽
 	
-	var SIZE = 64;//音乐片段数
+	var SIZE = 32;//音乐片段数
 	
 	var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 	ARR.dotMode = "random";
@@ -28,7 +28,7 @@
 	}();
 	
 	//Android和苹果设备则设置音乐片段为16
-	isMobile && (SIZE = 32);
+	isMobile && (SIZE = 16);
 	
 	//初始化heigth，width以及canvas的宽高
 	function init(){
