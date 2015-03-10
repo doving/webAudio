@@ -156,9 +156,8 @@
 		for(var i = 0; i < lis.length; i++){
 			lis[i].onclick = function(){
 				visualizer.play('/media/'+this.title);
-				for(var j = 0; j < lis.length; j++){
-					lis[j].className = "";
-				}
+				var play = $("li.play");
+				play && (play.className = "");
 				this.className = "play";
 			}
 		}
