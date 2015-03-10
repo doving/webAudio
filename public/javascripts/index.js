@@ -3,6 +3,7 @@
 	var box = $("#canvas");
 	var canvas = document.createElement("canvas");
 	var ctx = canvas.getContext("2d");
+
 	box.appendChild(canvas);
 	
 	var HEIGHT,//canvas高
@@ -36,6 +37,7 @@
 		WIDTH = box.clientWidth;
 		canvas.height = HEIGHT;
 		canvas.width = WIDTH;
+		ctx.globalCompositeOperation = "lighter";
 		getArr();
 	}
 	
@@ -62,7 +64,7 @@
 		for(var i = 0;i < SIZE; i++){
 			var x =  random(0, WIDTH),
 				y = random(0, HEIGHT),
-				color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',opacity)',
+				color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',0)',
 				ran = random(1, 4);
 			ARR.push({
 				x: x,
@@ -104,13 +106,13 @@
 					ctx.beginPath();
 					ctx.arc(x, y, r, 0, Math.PI * 2, true);
 			    	var gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-				    gradient.addColorStop(0, "rgba(255,255,255,"+(this[i]/280+.5)+")");
+				    gradient.addColorStop(0, "rgb(255,255,255)");
 	
-				    var per = this[i]/(isMobile ? 160 : 250);
-				    per = per > 1 ? 1 : per;
+				    //var per = this[i]/(isMobile ? 160 : 250);
+				    //per = per > 1 ? 1 : per;
 	
-				    gradient.addColorStop(per, o.color.replace("opacity",1-this[i]/(isMobile ? 160 : 220)));
-				    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+				    //gradient.addColorStop(per, o.color.replace("opacity",1-this[i]/(isMobile ? 160 : 220)));
+				    gradient.addColorStop(1, o.color);
 				    /*for(var j = 0, l = Math.round(this[i]/10); j < l; j++){
 				    	//ctx.beginPath();
 				    	ctx.moveTo(x ,y);
