@@ -195,10 +195,7 @@ header{
 	/*height: -webkit-calc(~"100% - "(@head-height + @body-padding*2));
 	height: -moz-calc(~"100% - "(@head-height + @body-padding*2));
 	height: calc(~"100% - "(@head-height + @body-padding*2));*/
-	@media screen and (max-height: 450px){
-		.media-list-canvas();
-	}
-	@media screen and (max-width: 500px){
+	@media screen and (max-height: 450px), screen and (max-width: 500px){
 		.media-list-canvas();
 	}
 }
