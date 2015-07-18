@@ -16,5 +16,8 @@
     "less-middleware": "1.0.x",
     "mongodb": ">= 2.0.0",
     "connect-mongo": ">= 0.1.7"
+  },
+  "devDependencies": {
+    "multer": "^0.1.8"
   }
 }
