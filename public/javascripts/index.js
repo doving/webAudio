@@ -95,7 +95,7 @@
 				o = ARR[i];
 				if(Render.type == 'Dot'){
 					//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
-					var x = o.x;
+					var x = o.x,
 					y = o.y,
 					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 500 : 800));
 					o.x += o.dx;
