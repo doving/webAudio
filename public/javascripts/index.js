@@ -157,7 +157,7 @@
 	!function(){
 		for(var i = 0; i < lis.length; i++){
 			lis[i].onclick = function(){
-				visualizer.play('/media/' + this.title);
+				visualizer.play('/media/' + this.title, isMobile);
 				var play = $("li.play");
 				play && (play.className = "");
 				this.className = "play";
@@ -175,9 +175,7 @@
 		}
 		$("#add").style.display = "none";
 		$("#music-list").style.top = 0;
-		$("#add").onclick = function(){
-			visualizer.source.start(0);
-		}
+		
 		$("#loading-box").style.display = "block";
 		visualizer.addinit(function(){
 			$("#loading").style.display = "none";

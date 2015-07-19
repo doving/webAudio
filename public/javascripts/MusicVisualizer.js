@@ -5,6 +5,9 @@ function MusicVisualizer(options){
 	//当前正在播放的bufferSource
 	this.source = null;
 
+	this.audio = new Audio();
+	this.audioSource = MusicVisualizer.ac.createMediaElementSource(this.audio);
+
 	//选择过的资源数的累计值
 	this.count = 0;
 
@@ -48,7 +51,7 @@ MusicVisualizer.isFunction = function(fun){
  *@param path string,音频资源路径
  *@param fun function,decode成功后的回调函数，将arraybuffer作为this
 */
-/*MusicVisualizer.load = function(xhr, path, fun){
+MusicVisualizer.load = function(xhr, path, fun){
 	xhr.abort();
 	xhr.open("GET", path, true);
 	xhr.responseType = "arraybuffer";
@@ -57,41 +60,38 @@ MusicVisualizer.isFunction = function(fun){
 		MusicVisualizer.isFunction(fun) && fun.call(xhr.response);
 	}
 	xhr.send();
-}*/
+}
 
 //播放mv对象的source,mv.onended为播放结束后的回调
 MusicVisualizer.play = function(mv){
+
 	mv.source.connect(mv.analyser);
 
-	if(mv.source.mediaElement){
-		mv.source.mediaElement.play();
-		mv.source.mediaElement.onended = mv.onended;
-	}else{
+	if(mv.source === mv.audioSource){
+		mv.audio.play();
+		mv.audio.onended = mv.onended;
+	}else{		
 		//兼容较老的API
 		mv.source[mv.source.start ? "start" : "noteOn"](0);
+
 		//为该bufferSource绑定onended事件
-		mv.source.onended = mv.onended;
+		MusicVisualizer.isFunction(mv.onended) && (mv.source.onended = mv.onended);
 	}
+	
 }
 
 //停止mv.source
 MusicVisualizer.stop = function(mv){
-
-	//兼容较老的API
-	if(mv.source.mediaElement){
-		mv.source.mediaElement.pause();
-		//停止后移除之前为mv.source绑定的onended事件
-		mv.source.mediaElement.onended = window.undefined;
+	if(mv.source === mv.audioSource){
+		mv.audio.pause();
+		mv.audio.onended = window.undefined;
 	}else{
+		//兼容较老的API
 		mv.source[mv.source.stop ? "stop" : "noteOff"](0);
-	    
-	    //停止后移除之前为mv.source绑定的onended事件
+
+		//停止后移除之前为mv.source绑定的onended事件
 		mv.source.onended = window.undefined;
-	}
-
-	mv.source.disconnect();
-
-	mv.source = null;
+	}	
 }
 
 /*可视化当前正在播放的音频
@@ -128,35 +128,36 @@ MusicVisualizer.prototype.decode = function(arraybuffer, fun){
 	})
 }
 
-MusicVisualizer.prototype.play = function(path){
+MusicVisualizer.prototype.play = function(path, isMobile){
 	var self = this;
 	var count = ++self.count;
 
-	typeof(path) === 'string' && (path = new Audio(path));
-
-	var isAudio = path instanceof HTMLAudioElement;
 	//停止当前正在播放的bufferSource
 	self.source && MusicVisualizer.stop(self);
 
-	//从audio或video标签中创建MediaElementAudioSourceNode对象
-	if(isAudio){
-
-		var msource = MusicVisualizer.ac.createMediaElementSource(path);
-		//console.log(self.initCallback , !self.source , MusicVisualizer.isFunction(self.initCallback));
-		self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
-
-		self.source = msource;
-
-		MusicVisualizer.play(self);
-
-	}else if(path instanceof ArrayBuffer){
-
+	if(path instanceof ArrayBuffer){
 		self.decode(path, function(){
+			self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
 			self.source = this;
 			MusicVisualizer.play(self);
 		});
+	}
+	if(typeof(path) === 'string'){
 
-	}/*else if(typeof(path) === 'string'){
+		//安卓iphone等移动设备上audio播放流似乎没被re-routed到audioContext中
+		if(!isMobile){
+			self.audio.src = path;
+
+			self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
+
+			self.source = self.audioSource;
+
+			MusicVisualizer.play(self);
+
+			return;
+		}
+		
+
 		if(path in self.buffer){
 			MusicVisualizer.stop(self.source);
 
@@ -184,12 +185,16 @@ MusicVisualizer.prototype.play = function(path){
 				});
 			})
 		}
-	}*/
+	}
 }
 
 //直接播放当前的bufferSource，在苹果设备用户触发时调用
 MusicVisualizer.prototype.start = function(){
-	this.source && this.source[this.source.start ? "start" : "noteOn"](0);
+	if(this.source === this.audioSource){
+		this.audio.play();
+	}else{
+		this.source && this.source[this.source.start ? "start" : "noteOn"](0);
+	}	
 }
 
 //应用加载完毕，为苹果设备添加用户触发的事件
