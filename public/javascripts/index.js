@@ -9,7 +9,7 @@
 	var HEIGHT,//canvas高
 	    WIDTH;//canvs 宽
 	
-	var SIZE = 64;//音乐片段数
+	var SIZE = 32;//音乐片段数
 	
 	var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 	ARR.dotMode = "random";
@@ -65,7 +65,7 @@
 			var x =  random(0, WIDTH),
 				y = random(0, HEIGHT),
 				color = 'rgba('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+',0)',
-				ran = random(1, 4);
+				ran = random(1, 8) * 0.2;
 			ARR.push({
 				x: x,
 				y: y,
@@ -97,10 +97,10 @@
 					//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 					var x = o.x,
 					y = o.y,
-					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 500 : 800));
+					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 300 : 560));
 					o.x += o.dx;
 					//o.x += 2;
-					o.x > (WIDTH + r) && (o.x = - r);
+					o.x > WIDTH && (o.x = 0);
 	
 					//开始路径，绘画圆
 					ctx.beginPath();
