@@ -48,7 +48,7 @@ MusicVisualizer.isFunction = function(fun){
  *@param path string,音频资源路径
  *@param fun function,decode成功后的回调函数，将arraybuffer作为this
 */
-MusicVisualizer.load = function(xhr, path, fun){
+/*MusicVisualizer.load = function(xhr, path, fun){
 	xhr.abort();
 	xhr.open("GET", path, true);
 	xhr.responseType = "arraybuffer";
@@ -57,27 +57,41 @@ MusicVisualizer.load = function(xhr, path, fun){
 		MusicVisualizer.isFunction(fun) && fun.call(xhr.response);
 	}
 	xhr.send();
-}
+}*/
 
 //播放mv对象的source,mv.onended为播放结束后的回调
 MusicVisualizer.play = function(mv){
 	mv.source.connect(mv.analyser);
 
-	//兼容较老的API
-	mv.source[mv.source.start ? "start" : "noteOn"](0);
-
-	//为该bufferSource绑定onended事件
-	MusicVisualizer.isFunction(mv.onended) && (mv.source.onended = mv.onended);
+	if(mv.source.mediaElement){
+		mv.source.mediaElement.play();
+		mv.source.mediaElement.onended = mv.onended;
+	}else{
+		//兼容较老的API
+		mv.source[mv.source.start ? "start" : "noteOn"](0);
+		//为该bufferSource绑定onended事件
+		mv.source.onended = mv.onended;
+	}
 }
 
 //停止mv.source
 MusicVisualizer.stop = function(mv){
 
 	//兼容较老的API
-	mv.source[mv.source.stop ? "stop" : "noteOff"](0);
+	if(mv.source.mediaElement){
+		mv.source.mediaElement.pause();
+		//停止后移除之前为mv.source绑定的onended事件
+		mv.source.mediaElement.onended = window.undefined;
+	}else{
+		mv.source[mv.source.stop ? "stop" : "noteOff"](0);
+	    
+	    //停止后移除之前为mv.source绑定的onended事件
+		mv.source.onended = window.undefined;
+	}
 
-	//停止后移除之前为mv.source绑定的onended事件
-	mv.source.onended = window.undefined;
+	mv.source.disconnect();
+
+	mv.source = null;
 }
 
 /*可视化当前正在播放的音频
@@ -118,16 +132,31 @@ MusicVisualizer.prototype.play = function(path){
 	var self = this;
 	var count = ++self.count;
 
+	typeof(path) === 'string' && (path = new Audio(path));
+
+	var isAudio = path instanceof HTMLAudioElement;
 	//停止当前正在播放的bufferSource
 	self.source && MusicVisualizer.stop(self);
 
-	if(path instanceof ArrayBuffer){
+	//从audio或video标签中创建MediaElementAudioSourceNode对象
+	if(isAudio){
+
+		var msource = MusicVisualizer.ac.createMediaElementSource(path);
+		//console.log(self.initCallback , !self.source , MusicVisualizer.isFunction(self.initCallback));
+		self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
+
+		self.source = msource;
+
+		MusicVisualizer.play(self);
+
+	}else if(path instanceof ArrayBuffer){
+
 		self.decode(path, function(){
 			self.source = this;
 			MusicVisualizer.play(self);
 		});
-	}
-	if(typeof(path) === 'string'){
+
+	}/*else if(typeof(path) === 'string'){
 		if(path in self.buffer){
 			MusicVisualizer.stop(self.source);
 
@@ -155,7 +184,7 @@ MusicVisualizer.prototype.play = function(path){
 				});
 			})
 		}
-	}
+	}*/
 }
 
 //直接播放当前的bufferSource，在苹果设备用户触发时调用

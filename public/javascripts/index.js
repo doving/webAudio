@@ -9,7 +9,7 @@
 	var HEIGHT,//canvas高
 	    WIDTH;//canvs 宽
 	
-	var SIZE = 32;//音乐片段数
+	var SIZE = 64;//音乐片段数
 	
 	var ARR = [];//该数组保存canvas中各图形的x,y坐标以及他们的颜色
 	ARR.dotMode = "random";
@@ -157,13 +157,12 @@
 	!function(){
 		for(var i = 0; i < lis.length; i++){
 			lis[i].onclick = function(){
-				visualizer.play('/media/'+this.title);
+				visualizer.play('/media/' + this.title);
 				var play = $("li.play");
 				play && (play.className = "");
 				this.className = "play";
 			}
 		}
-		lis[0].click();
 	}()
 	
 	$("#add").onclick = function(){
@@ -190,6 +189,8 @@
 		}
 	};
 	
+	lis[0].click();
+
 	$("#upload").onchange = function(){
 		var file = this.files[0];
 		var fr = new FileReader();

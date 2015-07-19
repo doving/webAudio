@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var mediaPath = 'public/media'
+var mediaPath = 'public/media';
 router.get('/', function(req, res){
 	var fs = require("fs");
 	fs.readdir(mediaPath, function(err, files){
