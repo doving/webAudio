@@ -5,6 +5,7 @@ function MusicVisualizer(options){
 	//当前正在播放的bufferSource
 	this.source = null;
 
+	//通过audio标签创建MediaaudioElementSourceNode时使用的audio元素
 	this.audio = new Audio();
 	this.audioSource = MusicVisualizer.ac.createMediaElementSource(this.audio);
 
