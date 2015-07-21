@@ -129,7 +129,7 @@ MusicVisualizer.prototype.decode = function(arraybuffer, fun){
 	})
 }
 
-MusicVisualizer.prototype.play = function(path, isMobile){
+MusicVisualizer.prototype.play = function(path, isMobile/*是否移动设备*/){
 	var self = this;
 	var count = ++self.count;
 
@@ -145,7 +145,7 @@ MusicVisualizer.prototype.play = function(path, isMobile){
 	}
 	if(typeof(path) === 'string'){
 
-		//安卓iphone等移动设备上audio播放流似乎没被re-routed到audioContext中
+		//pc上通过audio标签创建MediaaudioElementSourceNode，比ajax请求再解码要快
 		if(!isMobile){
 			self.audio.src = path;
 
@@ -158,7 +158,8 @@ MusicVisualizer.prototype.play = function(path, isMobile){
 			return;
 		}
 		
-
+		//安卓iphone等移动设备上使用ajax请求arraybuffer再解码
+		//安卓iphone等移动设备上audio播放流似乎没被re-routed到audioContext中
 		if(path in self.buffer){
 			MusicVisualizer.stop(self.source);
 
