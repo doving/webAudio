@@ -1,1 +1,2 @@
-public/stylesheets/*.css;
+#忽略css文件
+public/stylesheets/*.css
