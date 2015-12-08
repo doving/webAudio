@@ -16,7 +16,7 @@ function MusicVisualizer(options){
 	this.onended = options.onended;
 
 	//unit8Array的长度
-	this.size = options.size;
+	this.size = options.size || 32;
 
 	//可视化调用的绘图函数
 	this.visualizer = options.visualizer;
@@ -30,7 +30,15 @@ function MusicVisualizer(options){
 	//音频分析对象
 	this.analyser = MusicVisualizer.ac.createAnalyser();
 
-	this.analyser.connect(this.gainNode);
+	//延迟对象
+	this.delayNode = MusicVisualizer.ac.createDelay(179);
+
+	typeof options.delay === 'number' && (this.delayNode.delayTime.value = options.delay);
+	//this.delayNode.delayTime.value = 5;
+
+	this.analyser.connect(this.delayNode);
+
+	this.delayNode.connect(this.gainNode);
 
 	this.gainNode.connect(MusicVisualizer.ac.destination);
 
