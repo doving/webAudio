@@ -106,10 +106,14 @@ MusicVisualizer.visualize = function(mv){
 								window.webkitRequestAnimationFrame || 
 								window.oRequestAnimationFrame || 
 								window.mzRequestAnimationFrame;
+	var oldav = 0;
 	function v(){
 		mv.analyser.getByteFrequencyData(arr);
+		var av = Math.round(100 * Array.prototype.reduce.call(arr, function(x, y){return x + y}) / mv.size / 256);
+		var dlav = av - oldav;
+		oldav = av;
 		//将分析得到的音频数据传递给mv.visualizer方法可视化
-		mv.visualizer.call(arr);
+		mv.visualizer.call(arr, dlav, av);
 		requestAnimationFrame(v);
 	}
 

@@ -237,10 +237,14 @@ header{
 	}
 }
 .canvas{
-	left: -webkit-calc(~"@{list-width} + "(@body-padding * 1.5));
+/* 	left: -webkit-calc(~"@{list-width} + "(@body-padding * 1.5));
 	left: -moz-calc(~"@{list-width} + "(@body-padding * 1.5));
 	left: calc(~"@{list-width} + "(@body-padding * 1.5));
-	right: @body-padding;
+	right: @body-padding; */
+	left: 0;
+	top: 0;
+	right: 0;
+	z-index: -1;
 }
 @keyframes loading{
 	0% {

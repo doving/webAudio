@@ -38,6 +38,7 @@
 		canvas.height = HEIGHT;
 		canvas.width = WIDTH;
 		ctx.globalCompositeOperation = "lighter";
+		ctx.lineWidth = (HEIGHT > WIDTH ? WIDTH : HEIGHT) / 30;
 		getArr();
 	}
 	
@@ -84,20 +85,32 @@
 	
 	function Render(){	
 		var o = null;	
-		return function(){
+		return function(del, ave){
 			ctx.fillStyle = ARR.linearGradient;
 			var w = Math.round(WIDTH / SIZE),
 			cgap = Math.round(w * 0.3);
 			cw = w - cgap;
 			ctx.clearRect(0, 0, WIDTH, HEIGHT);
-	
+			if(Render.type == 'Dot' && ((del > 3 && ave > 30) || (ave > 50 && del > 0)) ){
+				var d = Math.round(del * (ave - 20) * 0.01)+4;
+				for(var i = 0; i < d; i++){
+					var y = random(-HEIGHT * 2, 3*HEIGHT);
+					ctx.beginPath();
+					ctx.moveTo(0, y);		
+					ctx.lineTo(WIDTH, HEIGHT - y);
+					ctx.strokeStyle = 'rgb('+random(100, 250)+','+random(50, 250)+','+random(50, 100)+')';
+					ctx.stroke();
+				}
+				//if(del > 3){alert(del + ' == ' + ave)}
+				//$('.type .selected').innerHTML = del + '=' + ave;
+			}
 			for(var i = 0; i < SIZE; i++){		
 				o = ARR[i];
 				if(Render.type == 'Dot'){
 					//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 					var x = o.x,
 					y = o.y,
-					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 300 : 500));
+					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 300 : 600));
 					o.x += o.dx;
 					//o.x += 2;
 					o.x > WIDTH && (o.x = 0);
@@ -221,8 +234,8 @@
 			ARR.dotMode = ARR.dotMode == "static" ? "random" : "static";
 		}
 	}
-	$("#volume").onchange = function(){
+	$("#volume").oninput = function(){
 		visualizer.changeVolume(this.value/this.max);
 	}
-	$("#volume").onchange();
+	$("#volume").oninput();
 }()
