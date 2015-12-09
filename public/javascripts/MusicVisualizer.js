@@ -158,20 +158,20 @@ MusicVisualizer.prototype.play = function(path, isMobile/*是否移动设备*/){
 	if(typeof(path) === 'string'){
 
 		//pc上通过audio标签创建MediaaudioElementSourceNode，比ajax请求再解码要快
-// 		if(!isMobile){
-// 			//self.audio.src = path;
-// 			self.audio = new Audio(path);
-// 			self.audioSource = MusicVisualizer.ac.createMediaElementSource(self.audio);
-// 			console.log(path);
+		if(!isMobile){
+			//self.audio.src = path;
+			self.audio = new Audio(path);
+			self.audioSource = MusicVisualizer.ac.createMediaElementSource(self.audio);
+			//console.log(path);
 
-// 			self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
+			self.initCallback && !self.source && MusicVisualizer.isFunction(self.initCallback) && self.initCallback();
 
-// 			self.source = self.audioSource;
+			self.source = self.audioSource;
 
-// 			MusicVisualizer.play(self);
+			MusicVisualizer.play(self);
 
-// 			return;
-// 		}
+			return;
+		}
 		
 		//安卓iphone等移动设备上使用ajax请求arraybuffer再解码
 		//安卓iphone等移动设备上audio播放流似乎没被re-routed到audioContext中
