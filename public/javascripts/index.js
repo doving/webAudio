@@ -110,7 +110,7 @@
 					//ctx.strokeStyle = ARR[i].color.replace(",0",","+this[i]/270);
 					var x = o.x,
 					y = o.y,
-					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 300 : 600));
+					r = Math.round((this[i]/2+18)*(HEIGHT > WIDTH ? WIDTH : HEIGHT)/(isMobile ? 400 : 600));
 					o.x += o.dx;
 					//o.x += 2;
 					o.x > WIDTH && (o.x = 0);
