@@ -158,7 +158,7 @@ MusicVisualizer.prototype.play = function(path, isMobile/*是否移动设备*/){
 	if(typeof(path) === 'string'){
 
 		//pc上通过audio标签创建MediaaudioElementSourceNode，比ajax请求再解码要快
-		//if(!isMobile){
+		if(!isMobile){
 			//self.audio.src = path;
 			self.audio = new Audio(path);
 			self.audioSource = MusicVisualizer.ac.createMediaElementSource(self.audio);
@@ -170,7 +170,7 @@ MusicVisualizer.prototype.play = function(path, isMobile/*是否移动设备*/){
 
 			MusicVisualizer.play(self);
 
-		/*	return;
+			return;
 		}
 		
 		//安卓iphone等移动设备上使用ajax请求arraybuffer再解码
@@ -201,7 +201,7 @@ MusicVisualizer.prototype.play = function(path, isMobile/*是否移动设备*/){
 					MusicVisualizer.play(self);
 				});
 			})
-		}*/
+		}
 	}
 }
 

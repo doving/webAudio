@@ -170,7 +170,7 @@
 	!function(){
 		for(var i = 0; i < lis.length; i++){
 			lis[i].onclick = function(){
-				visualizer.play('/media/' + this.title/*, isMobile*/);
+				visualizer.play('/media/' + this.title, isMobile);
 				var play = $("li.play");
 				play && (play.className = "");
 				this.className = "play";
